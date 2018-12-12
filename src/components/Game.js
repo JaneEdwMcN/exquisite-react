@@ -8,10 +8,46 @@ class Game extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      poemSubmissions: [],
+      player: 1,
+      gameEnded: false
+    };
+  }
+
+  addPoemSubmission = (poemSubmission) => {
+    let submission = ""
+    for (var word in poemSubmission) {
+      if (word === "adjective1"){
+        submission += "The "
+      } else if (word === "adjective2") {
+        submission += "the "
+      }
+      submission += poemSubmission[word] + " "
+    }
+    submission += "."
+
+    const { poemSubmissions } = this.state
+    let { player } = this.state
+    player += 1
+    poemSubmissions.push(submission)
+    this.setState({
+      poemSubmissions,
+      player
+    })
+  }
+
+  endGame = (yes) => {
+    let { gameEnded } = this.state
+    gameEnded = yes
+    this.setState({
+      gameEnded
+    })
   }
 
   render() {
-
+    console.log("is the game over?");
+    console.log(this.state.gameEnded);
     const exampleFormat = FIELDS.map((field) => {
       if (field.key) {
         return field.placeholder;
@@ -22,21 +58,25 @@ class Game extends Component {
 
     return (
       <div className="Game">
-        <h2>Game</h2>
+      <h2>Game</h2>
 
-        <p>Each player should take turns filling out and submitting the form below. Each turn should be done individually and <em>in secret!</em> Take inspiration from the revealed recent submission. When all players are finished, click the final button on the bottom to reveal the entire poem.</p>
+      <p>Each player should take turns filling out and submitting the form below. Each turn should be done individually and <em>in secret!</em> Take inspiration from the revealed recent submission. When all players are finished, click the final button on the bottom to reveal the entire poem.</p>
 
-        <p>Please follow the following format for your poetry submission:</p>
+      <p>Please follow the following format for your poetry submission:</p>
 
-        <p className="Game__format-example">
-          { exampleFormat }
-        </p>
+      <p className="Game__format-example">
+      { exampleFormat }
+      </p>
 
-        <RecentSubmission />
+      { this.state.gameEnded ? "" : <RecentSubmission /> }
 
-        <PlayerSubmissionForm />
+      { this.state.gameEnded ? "" : < PlayerSubmissionForm
+      addPoemSubmissionCallback={this.addPoemSubmission}
+      player={this.state.player}/> }
 
-        <FinalPoem />
+      <FinalPoem
+      finalPoem={this.state.poemSubmissions}
+      endGameCallback={this.endGame}/>
 
       </div>
     );
