@@ -10,6 +10,7 @@ class Game extends Component {
     super(props);
     this.state = {
       poemSubmissions: [],
+      recentSubmission: "",
       player: 1,
       gameEnded: false
     };
@@ -28,11 +29,14 @@ class Game extends Component {
     submission += "."
 
     const { poemSubmissions } = this.state
+    let { recentSubmission } = this.state
+    recentSubmission = poemSubmission
     let { player } = this.state
     player += 1
     poemSubmissions.push(submission)
     this.setState({
       poemSubmissions,
+      recentSubmission,
       player
     })
   }
@@ -46,8 +50,6 @@ class Game extends Component {
   }
 
   render() {
-    console.log("is the game over?");
-    console.log(this.state.gameEnded);
     const exampleFormat = FIELDS.map((field) => {
       if (field.key) {
         return field.placeholder;
@@ -68,7 +70,7 @@ class Game extends Component {
       { exampleFormat }
       </p>
 
-      { this.state.gameEnded ? "" : <RecentSubmission /> }
+      { this.state.gameEnded ? "" : <RecentSubmission recentSubmission={this.state.recentSubmission}/> }
 
       { this.state.gameEnded ? "" : < PlayerSubmissionForm
       addPoemSubmissionCallback={this.addPoemSubmission}
